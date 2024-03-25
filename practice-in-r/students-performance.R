@@ -1,4 +1,4 @@
-students <- read.csv("C:\\Users\\thiag\\Documents\\learning-r\\r_coursera\\practice-in-r\\StudentsPerformance.csv")
+students <- read.csv("StudentsPerformance.csv")
 
 
 library(tidyverse)
@@ -19,10 +19,10 @@ students <- students %>%
          education= parental.level.of.education,
          preparation_course = test.preparation.course ,
          math_score = math.score,
-         writing_score = writing.score)
+         writing_score = writing.score,
+         reading_score = reading.score
+         )
 
-students <- students %>%
-  rename(reading_score = reading.score)
   
 names(students)
 
@@ -32,6 +32,7 @@ view(students)
 ggplot(students, aes(x=race_ethnicity))+
   geom_bar(width= 0.8, position = "dodge",  fill="#69b3a2") +
   labs(
+    title = "Distribuição de Raça/Etnia dos Estudantes",
     x= "Etnia",
     y= "Frequency"
   )+
@@ -41,7 +42,8 @@ ggplot(students, aes(x=race_ethnicity))+
 ggplot(students, aes(x=gender))+
   geom_bar(width= 0.5, position = "dodge",  fill="#69b3a2") +
   labs(
-    x= "Gender",
+    title = "Distribuição de Raça/Etnia dos Estudantes",
+     x= "Gender",
     y= "Frequency"
   )+
   theme_minimal()
@@ -50,7 +52,8 @@ ggplot(students, aes(x=gender))+
 ggplot(students, aes(x=preparation_course))+
   geom_bar(width= 0.5, position = "dodge",  fill="#69b3a2") +
   labs(
-    x= "Preparation Course",
+    title = "Comparação da Matrícula em Curso Preparatório",
+     x= "Preparation Course",
     y= "Frequency"
   )+
   theme_minimal()
@@ -71,13 +74,13 @@ ggplot(students)+
   geom_bar(width= 0.7, position = "dodge",  fill="#69b3a2") +
   coord_flip() +
   labs(
+    title = "Parental Leve of Education",
     x= "Frequency",
     y= "Education"
   )+
   theme_minimal()
 
 
-A
 
 
 
@@ -88,9 +91,7 @@ ggplot(data= students, aes(x=reading_score, y=writing_score))+
   labs(x = "Pontuação de Leitura", y = "Pontuação de Escrita",
         title = "Relação entre Pontuação de Leitura e Escrita dos Alunos")
 
-  
-ggplot(data = students, aes(x = reading_score, y = writing_score, color = cut)) +
-  geom_point()
+
 
 
 #mat e entinia
@@ -101,7 +102,9 @@ mean_students <- students %>%
 
 
 ggplot(mean_students, aes(x = race_ethnicity, y = mean_math_score)) +
-  geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7)
+  geom_bar(stat = "identity", fill = "#69b3a2", alpha = 0.7, width = 0.8) +
+  geom_errorbar(aes(ymin = mean_math_score - sd_math_score, ymax = mean_math_score + sd_math_score), width = 0.5) +
+  labs(x = "Raça/Etnia", y = "Média da Pontuação de Matemática", title = "Média da Pontuação de Matemática por Raça/Etnia")
 
 
 #read e etinia
@@ -112,7 +115,11 @@ mean_students_read <- students %>%
 
 
 ggplot(mean_students_read, aes(x = race_ethnicity, y = mean_read_score)) +
-  geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7)
+  geom_bar(stat = "identity", fill = "#69b3a2", alpha = 0.7, width = 0.8) +
+  geom_errorbar(aes(ymin = mean_read_score - sd_read_score, ymax = mean_read_score + sd_read_score), width = 0.5) +
+  labs(x = "Raça/Etnia", y = "Média da Pontuação de Leitua", title = "Média da Pontuação de Leitura por Raça/Etnia")
+
+
 
 
 #write e etnia
@@ -123,7 +130,13 @@ mean_students_write <- students %>%
 
 
 ggplot(mean_students_write, aes(x = race_ethnicity, y = mean_write_score)) +
-  geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7)
+  geom_bar(stat = "identity", fill = "#69b3a2", alpha = 0.7, width = 0.8) +
+  geom_errorbar(aes(ymin = mean_write_score - sd_write_score, ymax = mean_write_score + sd_write_score), width = 0.5) +
+  labs(x = "Raça/Etnia", y = "Média da Pontuação de Escrita", title = "Média da Pontuação de Escrita por Raça/Etnia")
+
+
+ggplot(mean_students_write, aes(x = race_ethnicity, y = mean_write_score)) +
+  geom_bar(stat = "identity", fill = "#69b3a2", alpha = 0.7)
 
 
 
@@ -137,9 +150,13 @@ ggplot(mean_students_write, aes(x = race_ethnicity, y = mean_write_score)) +
               sd_math_score = sd(math_score))
   
   
-  ggplot(mean_education_math, aes(x =education, y = mean_math_score)) +
-    geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7)
   
+  ggplot(mean_education_math, aes(x = education, y = mean_math_score)) +
+    geom_bar(stat = "identity", fill = "#69b3a2", alpha = 0.7) +
+    geom_errorbar(aes(ymin = mean_math_score - sd_math_score, ymax = mean_math_score + sd_math_score), 
+                  width = 0.2, 
+                  position = position_dodge(0.9)) +
+    labs(x = "Nível de Educação", y = "Média da Pontuação de Matemática", title = "Média da Pontuação de Matemática por Nível de Educação")
   
   #rad educatin
   mean_education_read <- students %>%
@@ -147,8 +164,14 @@ ggplot(mean_students_write, aes(x = race_ethnicity, y = mean_write_score)) +
     summarise(mean_read_score = mean(reading_score),
               sd_read_score = sd(reading_score))
   
-  ggplot(mean_education_read, aes(x =education, y=mean_read_score)) +
-    geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7)
+  
+  ggplot(mean_education_read, aes(x = education, y = mean_read_score)) +
+    geom_bar(stat = "identity", fill = "#69b3a2", alpha = 0.7) +
+    geom_errorbar(aes(ymin = mean_read_score - sd_read_score, ymax = mean_read_score +  sd_read_score), 
+                  width = 0.2, 
+                  position = position_dodge(0.9)) +
+    labs(x = "Nível de Educação", y = "Média da Pontuação de Leituta", title = "Média da Pontuação de Leitura por Nível de Educação")
+  
   
   
   mean_education_write <- students %>%
@@ -156,5 +179,11 @@ ggplot(mean_students_write, aes(x = race_ethnicity, y = mean_write_score)) +
     summarise(mean_writing_score = mean(writing_score),
               sd_writing_score = sd(writing_score))
   
-  ggplot(mean_education_write, aes(x =education, y=mean_writing_score)) +
-    geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7)
+  
+  ggplot(mean_education_write, aes(x = education, y = mean_writing_score)) +
+    geom_bar(stat = "identity",  position = position_dodge(),fill = "#69b3a2", alpha = 0.7) +
+    geom_errorbar(aes(ymin = mean_writing_score - sd_writing_score, ymax = mean_writing_score + sd_writing_score),
+                  width = 0.7,
+                  position = position_dodge(0.5)) +
+    labs(x = "Nível de Educação", y = "Média da Pontuação de Escrita", title = "Média da Pontuação de Escrita por Nível de Educação")
+
